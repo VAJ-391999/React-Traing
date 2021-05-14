@@ -4,6 +4,7 @@ import './App.css';
 import Persons from '../components/Persons/Persons';
 import ErrorBoundary from '../ErrorBoundary/ErorBoundary';
 import Cokpit from '../components/Cockpit/Cokpit';
+import axios from 'axios';
 
 class App extends Component {
   constructor(props){
@@ -16,7 +17,8 @@ class App extends Component {
       {id: 'as2',name: 'Manu', age: 29},
       {id: 'as3',name: 'Stephanie', age: 26}
     ],
-    showPerson: false
+    showPerson: false,
+    posts: []
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -26,6 +28,18 @@ class App extends Component {
 
   componentDidMount() {
     console.log('App.js componentDidMount');
+    axios.get(`https://jsonplaceholder.typicode.com/users`)
+    .then(response => {
+      const posts = response.data.slice(0, 4);
+      const updatedPosts = posts.map(post => {
+        return {
+          ...post,
+          author: 'Max'
+        }
+      });
+      console.log(response);
+      this.setState({ posts: updatedPosts});
+    })
   }
 
   nameChangeHandler =(event, id) => {
@@ -59,6 +73,10 @@ class App extends Component {
 
   render() {
     console.log('App.js render');
+    const posts = this.state.posts.map(post => {
+    return <h6>{post.name}</h6>;
+  });
+
     let persons = null;
 
     if (this.state.showPerson) {
@@ -77,6 +95,7 @@ class App extends Component {
     return (
       
         <div className="App">
+          {posts}
           <Cokpit 
             title = {this.props.appTitle} 
             showPerson={this.state.showPerson}
