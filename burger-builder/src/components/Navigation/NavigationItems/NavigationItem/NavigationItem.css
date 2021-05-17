@@ -3,7 +3,10 @@
     box-sizing: border-box;
     display: block;
     width: 100%;
+    list-style: none;
+  
   }
+  
   
   .NavigationItem a {
     color: #8F5C2C;

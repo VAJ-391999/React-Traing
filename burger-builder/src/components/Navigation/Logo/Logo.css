@@ -3,10 +3,16 @@
     padding: 8px;
     height: 100%;
     box-sizing: border-box;
-    border-radius: 8px;
+    border-radius: 5px;
 }
 
 .Logo img{
-    height: 40px;
+    height: 30px;
     width: 40px;
+}
+
+@media (min-width: 500px) {
+    .Logo {
+        height: 200px;
+    }
 }
