@@ -9,6 +9,9 @@ import './components/Navigation/NavigationItems/NavigationItem/NavigationItem.cs
 
 import reportWebVitals from './reportWebVitals';
 import { Route, Switch, BrowserRouter as Router, Redirect, NavLink } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import reducer from './store/reducer';
 
 /*const routing = (
   <Router>
@@ -32,8 +35,18 @@ import { Route, Switch, BrowserRouter as Router, Redirect, NavLink } from 'react
   </Router>
 )*/
 
+const store = createStore(reducer);
+
+const app = (
+  <Provider store={store}>
+    <Router>
+      <App />
+    </Router>
+  </Provider>
+);
+
 ReactDOM.render(
-  <App />,
+  app,
   document.getElementById('root')
 );
 

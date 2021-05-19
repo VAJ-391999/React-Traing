@@ -7,4 +7,4 @@ const button = (props) => (
       onClick={props.clicked}
       disabled={props.disabled}>{props.children}</button>
   );
-  export default button
+  export default button;
