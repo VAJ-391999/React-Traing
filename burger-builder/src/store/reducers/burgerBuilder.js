@@ -11,7 +11,8 @@ const INGREDIANT_PRICE = {
 const initialState = {
     ingrediants: null,
     totalPrice: 4,
-    error: false
+    error: false,
+    building: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -21,7 +22,8 @@ const reducer = (state = initialState, action) => {
             const updateIngrediants = updateOject(state.ingrediants, updatedIngrediant);
             const updatedState = {
                 ingrediants: updateIngrediants,
-                totalPrice: state.totalPrice + INGREDIANT_PRICE[action.ingrediantName]
+                totalPrice: state.totalPrice + INGREDIANT_PRICE[action.ingrediantName],
+                building: true
             }
             return updateOject(state, updatedState);
 
@@ -30,7 +32,8 @@ const reducer = (state = initialState, action) => {
             const updateIngs = updateOject(state.ingrediants, updatedIng);
             const updatedSt = {
                 ingrediants: updateIngs,
-                totalPrice: state.totalPrice + INGREDIANT_PRICE[action.ingrediantName]
+                totalPrice: state.totalPrice + INGREDIANT_PRICE[action.ingrediantName],
+                building: true
             }
             return updateOject(state, updatedSt);
 
@@ -43,7 +46,8 @@ const reducer = (state = initialState, action) => {
                     meat: action.ingrediants.meat
                 },
                 totalPrice: 4,
-                error: false
+                error: false,
+                building: false
             });
            
         case actionType.FATCH_INGREDIANS_FAILED:

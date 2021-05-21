@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom';
 import './App.css';
 import ReactTable from 'react-table';
 import About from './About';
+import HookCounter from './components/HookCounter';
+import HookCounterTow from './components/HookCounterTow';
+import HookcounterThree from './components/HookCounterThree';
+import HookCounterFour from './components/HookCounterFour';
 
 class App extends React.Component {
   state = {
@@ -54,8 +58,10 @@ class App extends React.Component {
     return (
       <div>
         <h1> Hello I am at home</h1>
-        
-        
+        <HookCounter />
+        <HookCounterTow />
+        <HookcounterThree />
+        <HookCounterFour />
       </div>
     );
   }

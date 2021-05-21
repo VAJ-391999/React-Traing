@@ -10,6 +10,7 @@ class Checkout extends Component {
 
     componentWillMount () {
         //this.props.onInitPurchase();
+        console.log("CheckOut" + this.props.ings);
     }
 
     /*  state ={
