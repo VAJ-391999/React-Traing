@@ -1,72 +1,89 @@
-import React from 'react';
+import React, { createContext, useReducer, UseReucer } from 'react';
 import ReactDOM from 'react-dom';
 import './App.css';
-import ReactTable from 'react-table';
 import About from './About';
-import HookCounter from './components/HookCounter';
-import HookCounterTow from './components/HookCounterTow';
-import HookcounterThree from './components/HookCounterThree';
-import HookCounterFour from './components/HookCounterFour';
+//import HookCounter from './components/SimpleHook/HookCounter';
+//import HookCounterTow from './components/SimpleHook/HookCounterTow';
+//import HookcounterThree from './components/SimpleHook/HookCounterThree';
+//import HookCounterFour from './components/SimpleHook/HookCounterFour';
+import UseEffectCounterOne from './components/HookUseEffect/UseEffectCounterOne';
+import HookContainer from './components/HookUseEffect/MouseContainer';
+import HookInterCounter from './components/HookUseEffect/HookIntervalCounter';
+import DataFatching from './components/HookUseEffect/DataFatching';
+import ContextC from './components/SimpleContext/ComponentC';
+import UseContextExample from './components/SimpleContext/UseContextExample';
+import Counter1 from './components/UserReducerExample/Counter1';
+import Counter2 from './components/UserReducerExample/Counter2';
+import ComponentA from './components/useReducerWithuseContext/FolderA/Componenta';
+import ComponentB from './components/useReducerWithuseContext/FolderB/ComponentB';
 
-class App extends React.Component {
-  state = {
-    username: '',
-    password: ''
-  }
+export const UserContext = React.createContext();
 
-  usernameHandler = (event) => {
-    console.log(event.target.value);
-    this.setState({username: event.target.value});
-  }
+const initialState = 0;
 
-  passwordHandler = (event) => {
-    console.log(event.target.value);
-    this.setState({password: event.target.value});
-  }
+const reducer = (state, action) => {
+    switch(action) {
+        case 'increment':
+            return state + 1;
+        case 'decrement':
+            return state - 1;
+        case 'reset':
+            return initialState;
+        default:
+            return state;
+   }
+}
 
-  formSubmitHandler = () =>{
-    
-  }
+export const counterContext = React.createContext();
 
- 
 
-  render() {
-    const data = [{
-      name: 'Sagar',
-      age: 28
-    },
-    {
-      name: 'payal',
-      age: 28
-    },
-    {  
-      name: 'Dhoni',  
-      age: 37  
-      }
-  ];
+function App() {
 
-  const columns = [{  
-    Header: 'Name',  
-    accessor: 'name'  
-    },{  
-    Header: 'Age',  
-    accessor: 'age'  
-    }];
-
-   
+  const[count, dispatch] = useReducer(reducer, initialState);
 
     return (
-      <div>
+      <div className="App">
         <h1> Hello I am at home</h1>
+      {/*
         <HookCounter />
         <HookCounterTow />
         <HookcounterThree />
         <HookCounterFour />
+
+         <h1>Hook interval Counter</h1>
+        <HookInterCounter />
+
+      */}  
+
+        <h1>UseEffectCounterOne</h1>
+        <UseEffectCounterOne />
+        <HookContainer />
+
+       
+
+        <h1>Data Fatching</h1>
+        <DataFatching />
+
+        <h1>Simple Context</h1>
+        <UserContext.Provider value={'Venisha'}>
+          <ContextC />
+          <UseContextExample />
+        </UserContext.Provider>
+
+        <Counter1 />
+        <Counter2 />
+
+        <counterContext.Provider value={{counter: count, dispatch}}>
+          <h2>Count = {count}</h2>
+          <ComponentA />
+          <ComponentB />
+        </counterContext.Provider>
+
       </div>
     );
   }
 
-}
+
   
 
 export default App;

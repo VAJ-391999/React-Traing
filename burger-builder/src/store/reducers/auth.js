@@ -1,6 +1,6 @@
 //import React from 'react;'
 import * as actionType from '../actions/actionType';
-import { updateOject } from './utility';
+import { updateOject } from '../../shared/utility';
 
 const initstate = {
     token: null,

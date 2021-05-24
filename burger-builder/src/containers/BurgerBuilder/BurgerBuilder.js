@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 import * as burgerBuilderAction from '../../store/actions/index';
 
 
-class BurgerBuilder extends Component {
+export class BurgerBuilder extends Component {
     state = {
         //ingrediants: null,
         //totalPrice: 4,
