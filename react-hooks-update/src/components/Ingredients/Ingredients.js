@@ -1,74 +1,83 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useReducer, useMemo } from 'react';
 
 import IngredientForm from './IngredientForm';
 import Search from './Search';
 import IngrediantsList from './IngredientList';
-import ErrorModel from '../UI/ErrorModal';
+import ErrorModal from '../UI/ErrorModal';
+import useHttp from '../../hooks/http';
+
+const ingrediantsReducer = (currentIngrediants, action) => {
+  switch(action.type) {
+    case 'SET':
+      return action.ingrediants;
+    case 'ADD':
+      return [...currentIngrediants, action.ingrediant]
+    case 'DELETE':
+      return currentIngrediants.filter(ing => ing.id !== action.id);
+    default:
+      throw new Error('should not get there');
+  };
+};
+
+
 
 function Ingredients() {
 
-  const[userIngrediants, setUserIngrediats] = useState([]);
+  const[userIngrediants, dispatch] = useReducer(ingrediantsReducer, []);
+  const { isLoading, error, data, sendRequest, reqExtra, reqIndentifier, clear} = useHttp();
+  
+
+  useEffect(() => {
+    if(!isLoading && !error && reqIndentifier === 'REMOVE_INGREDIANT'){
+      dispatch({type: 'DELETE', id: reqExtra});
+    }else if (!isLoading && !error && reqIndentifier === 'ADD_INGREDIANT'){
+      dispatch({
+        type: 'ADD',
+       ingrediant: {id: data.name, ...reqExtra}});
+    }
+   
+  }, [data, reqExtra, reqIndentifier, isLoading, error])
 
   const filteredIngrediantHandler = useCallback( (filteredIngrediants) => {
-    setUserIngrediats(filteredIngrediants);
+    dispatch({type: 'SET', ingrediants: filteredIngrediants});
   }, []);
 
-  const[isLoading, setLoading] = useState(false);
-  const[error, setError] = useState();
+  const addIngrediantsHandler = useCallback ((ingrediant) => {
 
- 
+    sendRequest('https://react-hooks-update-51a02-default-rtdb.firebaseio.com/ingrediants.json',
+     'POST',
+      JSON.stringify(ingrediant),
+      ingrediant,
+      'ADD_INGREDIANT');
+  }, [sendRequest]);
 
-  const addIngrediantsHandler = (ingrediant) => {
-    setLoading(true);
-    fetch('https://react-hooks-update-51a02-default-rtdb.firebaseio.com/ingrediants.json', {
-      method: 'POST',
-      body: JSON.stringify(ingrediant),
-      headers: { 'Content-Type': 'application/json'}
-    }).then(response => {
-      setLoading(false);
-      return response.json();
-     
-    }).then(responseData => {
-      setUserIngrediats(prevIngrediants => [...prevIngrediants, {
-        id: responseData.name,
-        ...ingrediant
-      }]);
-    });
-  };
+  const removeIngrediantsHandler = useCallback((ingrediantId) => {
+    sendRequest(`https://react-hooks-update-51a02-default-rtdb.firebaseio.com/ingrediants/${ingrediantId}.json`,
+     'DELETE',
+      null,
+      ingrediantId,
+      'REMOVE_INGREDIANT' );
+    
+  }, [sendRequest]);
 
-  const removeIngrediantsHandler = (ingrediantId) => {
-    console.log(ingrediantId)
-    setLoading(true);
-    fetch(`https://react-hooks-update-51a02-default-rtdb.firebaseio.com/ingrediants/${ingrediantId}.json`, {
-      method: 'DELETE',
-     
-    }).then(response => {
-      setLoading(false);
-      setUserIngrediats(prevIngrediants => {
-        //debugger
-        prevIngrediants.filter(ingredient => ingredient.id !== ingrediantId);
-      }).catch(error => {
-        setError(error.message);
-      });
-    });
-  };
+  const clearError = useCallback(() => {
+   clear();
+  }, []);
 
-  const clearError = () => {
-    setError(null);
-    isLoading(false);
-  }
+  const ingrediantsList = useMemo(() => {
+    return <IngrediantsList ingredients={userIngrediants} onRemoveItem={(Iid) => {removeIngrediantsHandler(Iid)}} />
+  }, [userIngrediants, removeIngrediantsHandler]);
 
   return (
     <div className="App">
 
-      {error && <ErrorModel onclose={clearError}>{error}</ErrorModel>}
+     {error && (<ErrorModal onClose={clear}>{error}</ErrorModal>) }
 
-      <IngredientForm onAddIngrediants={addIngrediantsHandler}  loaidng={isLoading} />
+      <IngredientForm onAddIngrediants={addIngrediantsHandler}  loading={isLoading} />
 
       <section>
         <Search onLoadIngrediants={filteredIngrediantHandler} />
-        
-        <IngrediantsList ingredients={userIngrediants} onRemoveItem={(Iid) => {removeIngrediantsHandler(Iid)}} />
+        {ingrediantsList}
       </section>
     </div>
   );

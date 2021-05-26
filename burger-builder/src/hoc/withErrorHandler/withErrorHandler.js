@@ -1,44 +1,22 @@
-import React, {Component} from 'react';
+import React, { useState , useEffect} from 'react';
 import Model from '../../components/UI/Model/Model';
 import Aux from '../Aux1';
+import useHttpErrorHandler from '../../hooks/http-error-handler';
 
 const withErrorHandle = (WrapperComponent, axios) => {
-    return class extends Component {
-        state = {
-            error: null
-        }
+    return props => {
+        const [error, clearError] = useHttpErrorHandler(axios);
 
-        componentWillMount() {
-            this.reqInterceptor = axios.interceptors.request.use(req => {
-                this.setState({error: null});
-                return req;
-            })
-            this.resInterceptor = axios.interceptors.response.use(null, error => {
-               this.setState({error: error});
-            });
-        }
-
-        errorConfirmedHandler = () => {
-            this.setState({error: null});
-        }
-
-        componentWillUnmount() {
-            axios.interceptors.request.eject(this.reqInterceptor);
-            axios.interceptors.response.eject(this.resInterceptor);
-        }
-
-        render() {
-            return (
-                <Aux>
-                    <Model 
-                    show={this.state.error}
-                    modelClosed={this.errorConfirmedHandler}>
-                        {this.state.error ? this.state.error.message : null}
-                    </Model>
-                    <WrapperComponent {...this.pprops} />
-                </Aux>
-            );
-        }
+        return (
+            <Aux>
+                <Model 
+                show={error}
+                modelClosed={clearError}>
+                    {error ? error.message : null}
+                </Model>
+                <WrapperComponent {...props} />
+            </Aux>
+        );
     }
 }
 

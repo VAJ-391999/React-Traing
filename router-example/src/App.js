@@ -16,6 +16,7 @@ import Counter1 from './components/UserReducerExample/Counter1';
 import Counter2 from './components/UserReducerExample/Counter2';
 import ComponentA from './components/useReducerWithuseContext/FolderA/Componenta';
 import ComponentB from './components/useReducerWithuseContext/FolderB/ComponentB';
+import FocusInput from './components/UseRefHook/focusInput';
 
 export const UserContext = React.createContext();
 
@@ -79,6 +80,8 @@ function App() {
           <ComponentB />
         </counterContext.Provider>
 
+        <h2>useRef Example</h2>
+        <FocusInput />
       </div>
     );
   }
