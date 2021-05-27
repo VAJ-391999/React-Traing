@@ -1,24 +1,51 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useState, useEffect, ChangeEvent, FC} from 'react';
 
-function App() {
+import './App.css';
+import Test from './test/test';
+import {ITask} from './interfaces';
+import TodoTask from './component/TodoTask';
+
+
+const App: FC = () => {
+
+  const[task, setTask] = useState<string>("");
+  const[deadLine, setDeadLine] = useState<number>(0);
+  const[todoList, setTodoList] = useState<ITask[]>([]);
+
+  const changeHandler = (event : ChangeEvent<HTMLInputElement>): void => {
+    if(event.target.name === "task") {
+      setTask(event.target.value);
+    }else  {
+      setDeadLine(Number(event.target.value));
+    }
+    
+  };
+
+  const addTask = (): void => {
+    const newTask = {taskName: task, taskDeadline: deadLine};
+    setTodoList([...todoList, newTask]);
+    console.log(todoList);
+    setTask("");
+    setDeadLine(0);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+     <div className="header">
+        <div className="inputForm">
+          <input type="text" placeholder="Task..." value={task} onChange={changeHandler} name="task"/>
+          <input type="number" placeholder="DeadLine in Days..."  onChange={changeHandler} name="deadLine"/>
+        </div>
+        <button onClick={addTask}>Add Task</button>
+
+
+
+     </div>
+     <div className="todoList">
+       {todoList.map((task: ITask, key: number) => {
+         return <TodoTask key={key} task={task} />
+       })}
+     </div>
     </div>
   );
 }
