@@ -1,51 +1,85 @@
-import React, {useState, useEffect, ChangeEvent, FC} from 'react';
+import React, { useRef, FC, ReactNode, ReactElement, useEffect } from 'react';
+import ContainterInterface from './Interfaces-all/containerInterface';
+import Input from './component/Input';
+import UseStateExample from './component/useStateExample';
 
 import './App.css';
-import Test from './test/test';
-import {ITask} from './interfaces';
-import TodoTask from './component/TodoTask';
+
+const Heading = ({ title }: { title: string }) => {
+  return (
+    <div>
+      {title}
+    </div>
+  );
+};
+
+const initState = {
+  first: 'Harry',
+  last: {
+    l: 'pal',
+    n: 'chal'
+  }
+} ;
+
+export const UseContext = React.createContext<typeof initState>(initState);
+
+
+
+const Container = ({ heading, children }: ContainterInterface): ReactElement => {
+  return <h1>{heading} {children}</h1>
+}
+
+const TextWithNumer = ({ heading, children }: { heading: string, children: (num: number) => ReactNode }): ReactElement => {
+
+  const [count, setCount] = React.useState<number>(1);
+
+  return (
+    <div>
+      {children(count)}
+      <div>
+        <button onClick={() => setCount(count + 1)}>Add</button>
+      </div>
+    </div>
+  );
+}
+
+//List
+function List<ListItem>({ items, render }: { items: ListItem[], render: (item: ListItem) => ReactNode }): ReactElement {
+  return (
+    <div>
+      <ul>
+        {items.map((item, index) => (
+          <li key={index}>
+            {render(item)}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+
 
 
 const App: FC = () => {
 
-  const[task, setTask] = useState<string>("");
-  const[deadLine, setDeadLine] = useState<number>(0);
-  const[todoList, setTodoList] = useState<ITask[]>([]);
+  const inputRef = useRef<Element | null>(null);
 
-  const changeHandler = (event : ChangeEvent<HTMLInputElement>): void => {
-    if(event.target.name === "task") {
-      setTask(event.target.value);
-    }else  {
-      setDeadLine(Number(event.target.value));
-    }
+  useEffect(() => {
     
-  };
-
-  const addTask = (): void => {
-    const newTask = {taskName: task, taskDeadline: deadLine};
-    setTodoList([...todoList, newTask]);
-    console.log(todoList);
-    setTask("");
-    setDeadLine(0);
-  };
+  }, []);
 
   return (
     <div className="App">
-     <div className="header">
-        <div className="inputForm">
-          <input type="text" placeholder="Task..." value={task} onChange={changeHandler} name="task"/>
-          <input type="number" placeholder="DeadLine in Days..."  onChange={changeHandler} name="deadLine"/>
-        </div>
-        <button onClick={addTask}>Add Task</button>
-
-
-
-     </div>
-     <div className="todoList">
-       {todoList.map((task: ITask, key: number) => {
-         return <TodoTask key={key} task={task} />
-       })}
-     </div>
+      <Heading title="Hello world"></Heading>
+      <Container heading="My App">Best Try</Container>
+      <TextWithNumer heading="title foo">{(num: number) => <div>Today's number is: {num}</div>}</TextWithNumer>
+      <List items={["hi", "hello"]} render={(item: string) => <div>{item}</div>}></List>
+      <Input label="FirstName" type="text" placeholder="Enter Your First Name" />
+      <UseContext.Provider value={initState}>
+        <UseStateExample />
+      </UseContext.Provider>
+      
     </div>
   );
 }
