@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather info</title>
+    <style>
+        table{
+            border-collapse: collapse;
+            width: 75%;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    
+                <% if (weather.length > 0) { %>
+                    <table border="2">
+                        <tr>
+                            <th>City</th>
+                            <th>Timezone</th>
+                            <th>Wind Speed</th>
+                            <th>Weather</th>
+                            <th>Pressure</th>
+                            <th>Temprature</th>
+                        </tr>
+                    <% for (let wt of weather) { %>
+                        <tr>
+                            <td><%= wt.city_name %></td>
+                            <td><%= wt.timezone %></td>
+                            <td><%= wt.wind_spd %></td>
+                            <td><%= wt.weather.description %></td>
+                            <td><%= wt.pres %></td>
+                            <td><%= wt.temp %></td>
+                        </tr>
+                    <% } %>
+                    </table>
+                <% } %>
+                <%- include('./pagination.ejs', {page: pagedata.page, next_page: pagedata.next_page, pre_page: pagedata.pre_page, lastPage: pagedata.lastPage, hasNextPage: pagedata.hasNextPage, hasPreviousPage: pagedata.hasPreviousPage}) %>
+
+            
+</body>
+</html>

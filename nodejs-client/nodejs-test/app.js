@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express();
 const mongoose = require('mongoose')
+const SignUpTemplateCopy = require('./models/SignUpModels');
 
 //get the status of environment variable
 const dotenv = require('dotenv')

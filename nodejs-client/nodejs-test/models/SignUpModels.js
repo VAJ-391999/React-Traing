@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt')
 
 const SignUpTemplate = new mongoose.Schema({
     fullName: {
@@ -21,6 +22,12 @@ const SignUpTemplate = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
+})
+
+SignUpTemplate.pre('save', async function(next){
+    const salt = await bcrypt.genSalt();
+    this.password = await bcrypt.hash(this.password, salt)
+    next();
 })
 
 module.exports = mongoose.model('myFirstDatabase', SignUpTemplate)
