@@ -1,6 +1,7 @@
 
-import React, { useState, useHistory } from 'react';
+import React, { useState } from 'react';
 import { FormControl, InputLabel, Input, FormHelperText, Button } from '@material-ui/core';
+import './Login.css'
 import axios from 'axios';
 
 const Login = () => {
@@ -35,7 +36,7 @@ const Login = () => {
 
 
     return (
-        <div>
+        <div className="Login">
             <form>
             <FormControl>
                 <InputLabel htmlFor="my-input">Email</InputLabel>

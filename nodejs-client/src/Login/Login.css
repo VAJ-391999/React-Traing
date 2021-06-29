@@ -1,0 +1,20 @@
+.Login {
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: auto;
+    padding: 30px;
+    margin: 10px;
+    background-color: slategray;
+}
+
+.Login .MuiFormControl-root{
+    width: 500px;
+    margin: 20px; 
+}
+
+.Login button {
+    margin: 20px;
+}

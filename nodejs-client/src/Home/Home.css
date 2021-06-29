@@ -1,0 +1,7 @@
+.Home .MuiCard-root {
+    height:auto;
+    width: 600px;
+    padding: 30px;
+    margin: 20px;
+    display: inline-block;
+}
