@@ -1,3 +1,4 @@
+const requests = require('requests');
 const express = require('express')
 const router = express.Router();
 const SignUpTemplateCopy = require('../models/SignUpModels');
@@ -35,6 +36,18 @@ router.get('/login', (request, response) => {
         console.log("error: ", err)
     })
     
+})
+
+router.post('/', (request, response) => {
+    console.log(request.body.cName);
+    requests(`http://api.openweathermap.org/data/2.5/weather?q=${request.body.cName}&appid=5ae591762ca1938ecc9cddeafe00f8d4`)
+    .on('data', function (chunk) {
+        response.setHeader("Access-Control-Allow-Origin", "*")
+        //res.writeHead(200,"Access-Control-Allow-Origin", "*")
+        response.write(chunk)
+        response.end(`Post Mothos Success Congo... ${request.body}`)
+    })
+   
 })
 
 module.exports = router;
