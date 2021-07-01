@@ -7,12 +7,21 @@ const cors = require('cors')
 const express = require('express')
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv')
-
-const routURL = require('./routes');
+const routURL = require('./routes/routes');
 
 const app = express();
 dotenv.config()
+
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", '*');
+    res.header("Access-Control-Allow-Credentials", 'true');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header("Access-Control-Allow-Headers", 'Origin,X-Requested-With,Content-Type,Accept,content-type,application/json');
+    next();
+  });
+app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors)
 
 app.get("/", (req,res) => {
     requests('http://api.openweathermap.org/data/2.5/weather?q=pune&appid=5ae591762ca1938ecc9cddeafe00f8d4')
@@ -25,15 +34,6 @@ app.get("/", (req,res) => {
         
 })
 
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", '*');
-    res.header("Access-Control-Allow-Credentials", 'true');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header("Access-Control-Allow-Headers", 'Origin,X-Requested-With,Content-Type,Accept,content-type,application/json');
-    next();
-  });
-app.use(express.json())
-app.use(cors)
 app.use('app/', routURL)
 app.listen(4002, () => console.log('Server is up and running....'))
 

@@ -70,7 +70,7 @@ const Home = () => {
         let dayName = weekdays[currentTime.getDay()] + " | " + months[month] + " " + date + " | " + hours + ":" + minutes + period;
         setDay(dayName);
 
-        axios.get('http://localhost:4002')
+        axios.get('http://localhost:4003/api/members/getdata')
             .then(res => {
                 const sData = res.data;
                 console.log(typeof sData, sData)
@@ -98,26 +98,27 @@ const Home = () => {
     const handleCity = (event) => {
         event.preventDefault();
         console.log("Post")
-        const jsonData = axios.post('http://localhost:4000/app', {cName: cityName.cName}, {
-            headers : { 
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-             }
-      
-          })
+        const jsonData = axios.post('http://localhost:4003/api/members/postdata', {cName: cityName.cName}, axiosConfig)
         .then(res => {
-            const resJson = JSON.parse(res.data)
-            console.log(resJson)
+            console.log( typeof res.data, res.data)
+            const sData = res.data;
+            setCollectedData({
+                ...collectedData, 
+                location:sData.name,
+                country: sData.sys.country,
+                temperature: sData.main.temp,
+                tempMin: sData.main.temp_min,
+                tempMax: sData.main.temp_max
+            })
         })
         
-        console.log(jsonData)
     }
 
     return (
         <div className="Home">
             <h1>Hello you are at home</h1>
             
-            {<form>
+            <form>
             <FormControl style={{width: '200px'}}>
                 <InputLabel id="demo-simple-select-label">City Name</InputLabel>
                 <Select
@@ -132,7 +133,7 @@ const Home = () => {
                     <MenuItem value="mumbai">Mumbai</MenuItem>
                 </Select>
             </FormControl>
-    </form>}<br />
+    </form>
             <button type="submit" onClick={(event)=>handleCity(event)} >Click</button>
             <Card>
                 <div className="weathercon">

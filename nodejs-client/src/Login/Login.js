@@ -1,12 +1,13 @@
 
 import React, { useState } from 'react';
+import {useHistory} from 'react-router-dom'
 import { FormControl, InputLabel, Input, FormHelperText, Button } from '@material-ui/core';
 import './Login.css'
 import axios from 'axios';
 
 const Login = () => {
 
-    
+    let history = useHistory();
 
     const [loginDetails, setLoginDetails] = useState({
         email: '',
@@ -17,19 +18,22 @@ const Login = () => {
     const loginFormSubmit = (event) => {
         event.preventDefault();
 
-        axios.get('http://localhost:4000/app/login')
+        /*axios.get('http://localhost:4000/app/login')
         .then(res => {
             const serversideData = res.data;
             serversideData.map((user,index) => {
                 if(user.email === loginDetails.email) {
                     if(user.password === loginDetails.password) {
                         console.log("You have successful logged in");
-                        
+                        history.replace('/Dashboard')
                     }
                 }
                 
             })
-        })
+        })*/
+
+        axios.post('http://localhost:4000/app/login', loginDetails)
+        .then(res => console.log("After post", res.data))
 
        
     }

@@ -38,6 +38,30 @@ router.get('/login', (request, response) => {
     
 })
 
+router.post('/login', (request, response) => {
+    const registeruser = {
+        email: request.body.email,
+        password: request.body.password
+    }
+
+    SignUpTemplateCopy.find({ })
+    .then((data) => {
+        console.log("Data :", data)
+        data.forEach(function(item,index){
+            if (item.email === registeruser.email) {
+               if (item.password === registeruser.password) {
+                   console.log("Login success..")
+               }
+            }
+        })
+    })
+    .catch((err) => {
+        console.log("error: ", err)
+    })
+
+    response.json({ msg : "Post Success..", registeruser})
+})
+
 router.post('/', (request, response) => {
     console.log(request.body.cName);
     requests(`http://api.openweathermap.org/data/2.5/weather?q=${request.body.cName}&appid=5ae591762ca1938ecc9cddeafe00f8d4`)
