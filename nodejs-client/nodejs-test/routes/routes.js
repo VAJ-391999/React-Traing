@@ -12,10 +12,10 @@ router.post('/signup', (request,response) => {
     })
     signUpedUser.save()
     .then(data => {
-        response.json(data)
-        .catch(error => {
-            response.json(error)
-        })
+        response.json({ msg : "You have Sign Up Successfully" ,data})
+    })
+    .catch(err => {
+        response.json({ msg : "Please Enter Valid Entry"})
     })
 })
 
@@ -47,19 +47,53 @@ router.post('/login', (request, response) => {
     SignUpTemplateCopy.find({ })
     .then((data) => {
         console.log("Data :", data)
-        data.forEach(function(item,index){
-            if (item.email === registeruser.email) {
-               if (item.password === registeruser.password) {
+        data.forEach(function(user,index){
+            if (user.email === registeruser.email) {
+
+               if (user.password === registeruser.password) {
+
                    console.log("Login success..")
+                   
+                   request.session.user = registeruser;
+                   console.log("session", request.session.user)
+
+                   response.status(200)
+                   .cookie("Name", "Payal", {
+                        sameSite : "strict",
+                        path: "/",
+                        expires : new Date( new Date().getTime() + 100 * 1000),
+                        httpOnly : true 
+                   }).send({ msg : "Login Success", user})
+                   
+                   response.json({ msg : "Login Success", user})
+                   
                }
+               else {
+                console.log("Login Password Fail..")
+                   response.json({ msg : "Please Enter Correct Password"})
+               }
+            }
+            else{
+                console.log("Login Email Fail..")
+                response.json({ msg : "Please Enter Correct Email"})
             }
         })
     })
     .catch((err) => {
         console.log("error: ", err)
     })
+})
 
-    response.json({ msg : "Post Success..", registeruser})
+
+router.get('/dashboard', (request, response) => {
+    console.log(request.session.user)
+    if (!request.session.user) {
+        response.status(401).send()
+    }
+    else {
+        response.status(200).send("Welcome to secret API")
+    }
+    
 })
 
 router.post('/', (request, response) => {

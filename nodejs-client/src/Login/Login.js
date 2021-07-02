@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
-import {useHistory} from 'react-router-dom'
+import { useHistory } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import { FormControl, InputLabel, Input, FormHelperText, Button } from '@material-ui/core';
 import './Login.css'
 import axios from 'axios';
@@ -14,7 +15,9 @@ const Login = () => {
         password: ''
     });
 
-    
+    const [loginMsg, setLoginMsg] = useState({ msg: "" })
+    const [cookieData, setCookieData] = useState({})
+
     const loginFormSubmit = (event) => {
         event.preventDefault();
 
@@ -32,39 +35,48 @@ const Login = () => {
             })
         })*/
 
-        axios.post('http://localhost:4000/app/login', loginDetails)
-        .then(res => console.log("After post", res.data))
+        axios.post('http://localhost:4000/app/login', loginDetails, {withCredentials : true})
+            .then(res => {
+                console.log("After post", res.data)
+                setLoginMsg({...loginMsg, msg : res.data.msg})
 
-       
+               if (res.data.item) {
+                   history.replace('/dashboard')
+               }
+            })
     }
 
 
     return (
         <div className="Login">
             <form>
-            <FormControl>
-                <InputLabel htmlFor="my-input">Email</InputLabel>
-                <Input
-                    id="my-input"
-                    aria-describedby="my-helper-text"
-                    value={loginDetails.email}
-                    onChange={(event) => setLoginDetails({...loginDetails, email: event.target.value})}
-                    type="text" />
-            </FormControl><br />
+                <FormControl>
+                    <InputLabel htmlFor="my-input">Email</InputLabel>
+                    <Input
+                        id="my-input"
+                        aria-describedby="my-helper-text"
+                        value={loginDetails.email}
+                        onChange={(event) => setLoginDetails({ ...loginDetails, email: event.target.value })}
+                        type="text" />
+                </FormControl><br />
 
-            <FormControl>
-                <InputLabel htmlFor="my-input">Password</InputLabel>
-                <Input
-                    id="my-input"
-                    aria-describedby="my-helper-text"
-                    value={loginDetails.password}
-                    onChange={(event) => setLoginDetails({...loginDetails, password: event.target.value})}
-                    type="password" /><br />
-            </FormControl><br />
+                <FormControl>
+                    <InputLabel htmlFor="my-input">Password</InputLabel>
+                    <Input
+                        id="my-input"
+                        aria-describedby="my-helper-text"
+                        value={loginDetails.password}
+                        onChange={(event) => setLoginDetails({ ...loginDetails, password: event.target.value })}
+                        type="password" /><br />
+                </FormControl><br />
 
-            <Button variant="contained" type="submit" onClick={(event) => loginFormSubmit(event)}>Submit</Button>
+                <Button variant="contained" type="submit" onClick={(event) => loginFormSubmit(event)}>Submit</Button>
             </form>
-           
+
+            <div className="Msg-div">
+                {loginMsg.msg}
+            </div>
+
         </div>
     );
 };

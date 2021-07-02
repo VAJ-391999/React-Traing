@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { FormControl, InputLabel, Input, FormHelperText, Button } from '@material-ui/core';
 import axios from 'axios';
 
@@ -11,12 +12,21 @@ const SignUp = () => {
         password: ''
     })
 
+    const history = useHistory();
+    const [signUpStatus, setSignUpStatus] = useState()
+
     const formSubmit = (event) => {
         event.preventDefault();
         //alert('form submitted successfully')
         //debugger
         axios.post('http://localhost:4000/app/signup', userDetails)
-        .then(res => console.log(res.data))
+        .then(res => {
+            console.log(res.data)
+            setSignUpStatus(res.data.msg)
+            if (res.data.data) {
+                history.replace('/login');
+            }
+        })
 
         setUserDetails({
             fullName: '',
@@ -69,6 +79,10 @@ const SignUp = () => {
                     onChange={(event) => setUserDetails({...userDetails, password: event.target.value})}
                     type="password" /><br />
             </FormControl><br />
+
+            <div className="signup-msg">
+                {signUpStatus}
+            </div>
 
             <Button variant="contained" type="submit">Submit</Button>
             </form>
