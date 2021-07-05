@@ -44,4 +44,5 @@ const SignUpTemplate = new mongoose.Schema({
     next();
 })*/
 
-module.exports = mongoose.model('myFirstDatabase', SignUpTemplate)
+module.exports = mongoose.model('myFirstDatabase', SignUpTemplate);
+

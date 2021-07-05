@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { Button } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import {
@@ -135,7 +136,7 @@ const Home = () => {
                     </Select>
                 </FormControl>
             </form>
-            <button type="submit" onClick={(event) => handleCity(event)} >Click</button>
+            <Button type="submit" onClick={(event) => handleCity(event)} variant="outlined">Click</Button><br />
             
                 <Card>
                     <div className="weathercon">
@@ -148,7 +149,7 @@ const Home = () => {
                         <h4>Temp_Min {collectedData.tempMin} | Temp_Max {collectedData.tempMax}</h4>
                     </div>
                 </Card> 
-           Have an Account ? <NavLink to="/login">Login</NavLink>
+           <h3>Have an Account ? <NavLink to="/login">Login</NavLink></h3>
         </div>
     )
 }

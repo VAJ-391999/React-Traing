@@ -40,7 +40,7 @@ const Login = () => {
                 console.log("After post", res.data)
                 setLoginMsg({...loginMsg, msg : res.data.msg})
 
-               if (res.data.item) {
+               if (res.data.user) {
                    history.replace('/dashboard')
                }
             })
