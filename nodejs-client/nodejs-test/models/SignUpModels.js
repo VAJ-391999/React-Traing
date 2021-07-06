@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const validator = require('validator')
+const bcrypt = require('bcryptjs');
+const validator = require('validator');
+const jwt = require('jsonwebtoken');
+const { response } = require('express');
 
 const SignUpTemplate = new mongoose.Schema({
     fullName: {
@@ -35,14 +37,39 @@ const SignUpTemplate = new mongoose.Schema({
     date: {
         type: Date,
         default: Date.now
-    }
+    },
+    tokens:[{
+        token: {
+            type: String,
+            required: true, 
+        }
+    }]
 })
 
-/*SignUpTemplate.pre('save', async function(next){
-    const salt = await bcrypt.genSalt();
-    this.password = await bcrypt.hash(this.password, salt)
-    next();
-})*/
+//generateAuthToken
+
+SignUpTemplate.methods.generateAuthToken = async function() {
+    try {
+        const token = jwt.sign({_id:this._id.toString()}, process.env.SECRET_KEY)
+        console.log(token)
+        this.tokens = this.tokens.concat({token:token})
+        await this.save();
+        return token
+    }
+    catch(err) {
+        response.json(err)
+    }
+}
+
+SignUpTemplate.pre('save', async function(next){
+    if(this.isModified("password")) {
+        console.log(`current password ${this.password}`)
+        this.password = await bcrypt.hash(this.password, 10);
+        console.log(`current password ${this.password}`)
+    }
+    
+    next(); 
+})
 
 module.exports = mongoose.model('myFirstDatabase', SignUpTemplate);
 

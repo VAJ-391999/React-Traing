@@ -3,34 +3,21 @@ import axios from 'axios';
 import { XGrid, GridColDef, GridCellParams } from '@material-ui/x-grid';
 import { DataGrid } from '@material-ui/data-grid'
 import AddForm from './AddForm';
-
-import { Button } from '@material-ui/core'
-
-export const ActionDelete = () => {
-    return <Button variant="outlined">Delete</Button>
-}
-
-export const ActionEdit = (params) => {
-
-    /*console.log("params",params)
-
-    const getRowId = (row) => row.id;
-
-    const deleteStudent = (param) => {
-        //alert('Are you sure you want to delete this student?')
-        let index = Number(getRowId(param));
-        console.log("row id", index)
-    }*/
-
-    return <Button variant="outlined">Edit</Button>
-}
-
+import EditForm from './EditForm';
+import Layout from '../Layout/Layout';
+import {
+    Button,
+    AppBar,
+    Toolbar,
+    Typography 
+} from '@material-ui/core'
 
 
 const Dashboard = () => {
 
     const [student, setStudent] = useState();
     const [isAdd, setIsAdd] = useState(false);
+    const [isEdit, setIsEdit] = useState();
 
     const getRowId = (row) => row.id;
 
@@ -42,7 +29,13 @@ const Dashboard = () => {
             .catch(err => console.log(err))
     }, [])
 
-    console.log(student)
+    const deleteStudent = (index) => {
+        axios.delete(`http://localhost:4000/restfulapi/student/${index}`)
+            .then(res => console.log(res.data))
+            .catch(err => console.log(err))
+    }
+
+
 
     const columns = [
         {
@@ -81,37 +74,40 @@ const Dashboard = () => {
             field: 'delete',
             headerName: "Delete",
             width: 150,
-            renderCell: (params) => <ActionDelete params={params} />
+            renderCell: (params) => {
+                return <Button variant="outlined" onClick={() => {
+                    let index = getRowId(params);
+                    console.log("row id", index);
+                    deleteStudent(index)
+                }}>Delete</Button>
+            }
         },
         {
             field: 'edit',
             headerName: "Edit",
             width: 150,
-            renderCell: (params) => <ActionEdit />
+            renderCell: (params) => {
+                return <Button variant="outlined" onClick={() => {
+                    let index = getRowId(params);
+                    console.log("row id", index);
+                    setIsEdit(index)
+                }}>Edit</Button>
+            }
         }
     ]
-
-    //const [rows, setRows] = useState(data);
-  /* const [deletedRows, setDeletedRows] = useState({});
-
-   const handleRowSelection = (e) => {
-    setDeletedRows({...deletedRows, ...student.filter((r) => r.id === e.data.id)});
-  };
-
-  console.log(deletedRows)*/
-  
 
 
     return (
         <div>
+            
             <h1>I am in dashboard</h1>
             <Button variant="outlined" onClick={() => setIsAdd(true)}>+</Button>
-            {isAdd && <AddForm />}
+            {isAdd && <AddForm closeAdd={() => setIsAdd(false)} />}
+            {isEdit && <EditForm index={isEdit} closeEdit={() => setIsEdit(null)} />}
             <div style={{ height: 250, width: '100%' }}>
                 {student ? <DataGrid
                     columns={columns}
                     rows={student}
-                   // onRowSelected={handleRowSelection}
                 /> : null}
             </div>
 

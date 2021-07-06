@@ -119,7 +119,7 @@ const Home = () => {
 
     return (
         <div className="Home">
-            <h1>Hello you are at home</h1>
+            <h1>Home</h1>
             <form>
                 <FormControl style={{ width: '200px' }}>
                     <InputLabel id="demo-simple-select-label">City Name</InputLabel>
@@ -148,8 +148,9 @@ const Home = () => {
                         <h3>{eval(((collectedData.temperature - 32) * (5 / 9)).toFixed(2))} C</h3>
                         <h4>Temp_Min {collectedData.tempMin} | Temp_Max {collectedData.tempMax}</h4>
                     </div>
+                    <h3>Have an Account ? <NavLink to="/login">Login</NavLink></h3>
                 </Card> 
-           <h3>Have an Account ? <NavLink to="/login">Login</NavLink></h3>
+           
         </div>
     )
 }

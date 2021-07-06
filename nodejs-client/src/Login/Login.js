@@ -1,10 +1,11 @@
 
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory , NavLink, Link} from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { FormControl, InputLabel, Input, FormHelperText, Button } from '@material-ui/core';
 import './Login.css'
 import axios from 'axios';
+import SignUp from '../SignUp/SignUp';
 
 const Login = () => {
 
@@ -35,21 +36,22 @@ const Login = () => {
             })
         })*/
 
-        axios.post('http://localhost:4000/app/login', loginDetails, {withCredentials : true})
+        axios.post('http://localhost:4000/app/login', loginDetails, { withCredentials: true })
             .then(res => {
                 console.log("After post", res.data)
-                setLoginMsg({...loginMsg, msg : res.data.msg})
+                setLoginMsg({ ...loginMsg, msg: res.data.msg })
 
-               if (res.data.user) {
-                   history.replace('/dashboard')
-               }
+                if (res.data.useremail) {
+                    history.replace('/dashboard')
+                }
             })
     }
 
 
     return (
         <div className="Login">
-            <form>
+            <form className="loginform">
+                <h1>Login Form</h1>
                 <FormControl>
                     <InputLabel htmlFor="my-input">Email</InputLabel>
                     <Input
@@ -69,14 +71,14 @@ const Login = () => {
                         onChange={(event) => setLoginDetails({ ...loginDetails, password: event.target.value })}
                         type="password" /><br />
                 </FormControl><br />
-
-                <Button variant="contained" type="submit" onClick={(event) => loginFormSubmit(event)}>Submit</Button>
+                <div className="Msg-div">
+                    {loginMsg.msg}
+                </div>
+                <h4><NavLink to="/">Forget Password ?</NavLink></h4>
+                <Button variant="contained" type="submit" onClick={(event) => loginFormSubmit(event)}>Login</Button>
+                <h3>Don't have account ? <NavLink to="/signup">Sign Up</NavLink></h3>
+                <h4><span><NavLink to="/">Go Back to Home</NavLink></span></h4>
             </form>
-
-            <div className="Msg-div">
-                {loginMsg.msg}
-            </div>
-
         </div>
     );
 };

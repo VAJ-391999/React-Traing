@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { FormControl, InputLabel, Input, FormHelperText, Button } from '@material-ui/core';
 import axios from 'axios';
+import './SignUp.css';
 
 const SignUp = () => {
     
@@ -23,7 +24,7 @@ const SignUp = () => {
         .then(res => {
             console.log(res.data)
             setSignUpStatus(res.data.msg)
-            if (res.data.data) {
+            if (res.data.signup) {
                 history.replace('/login');
             }
         })
@@ -38,8 +39,9 @@ const SignUp = () => {
     }
 
     return (
-        <div className="signupform">
-            <form onSubmit={formSubmit}>
+        <div className="SignUp">
+            <form onSubmit={formSubmit} className="Signup-form">
+                <h1>SignUp Form</h1>
             <FormControl>
                 <InputLabel htmlFor="my-input">Full Name</InputLabel>
                 <Input

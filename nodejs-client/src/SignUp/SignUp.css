@@ -1,4 +1,4 @@
-.Login {
+.SignUp {
     position: fixed;
     top: 0;
     left: 0;
@@ -15,30 +15,11 @@
     color:whitesmoke;
 }
 
-.Login .MuiFormControl-root{
-    width: 500px;
-    margin: 20px;
-    transition: all 0.3s ease-in-out;
-}
-
-.Login .MuiFormLabel-root {
-    color: whitesmoke;
-    font-size: 20px;
-}
-
-.Login #my-input {
+.SignUp #my-input {
     margin-top: 10px;
 }
 
-.Login .MuiInput-underline:after {
-    border-bottom: 2px solid whitesmoke;
-}
-
-.Login .MuiFormControl-root .Mui-focused {
-    color: whitesmoke;
-}
-
-.Login .loginform{
+.SignUp .Signup-form{
     display: inline-block;
     position: absolute;
     top: 50%;
@@ -52,24 +33,25 @@
     color:whitesmoke;
 }
 
-.Login button {
-    width: 90%;
-    
+.SignUp .MuiFormControl-root{
+    width: 500px;
+    margin: 20px;
 }
 
-.Login .Msg-div {
+.SignUp .MuiInput-underline:after {
+    border-bottom: 2px solid whitesmoke;
+}
+
+.SignUp .MuiFormControl-root .Mui-focused {
+    color: whitesmoke;
+}
+
+.SignUp .MuiFormLabel-root {
+    color: whitesmoke;
+    font-size: 20px;
+}
+
+.SignUp .signup-msg{
     margin-bottom: 15px;
     color: red;
-}
-
-.Login a{
-    color: whitesmoke;
-    text-decoration: none;
-}
-.Login a:hover {
-    color: #f0c420;
-}
-
-.Login h4 span{
-    color: #f0c420;
 }

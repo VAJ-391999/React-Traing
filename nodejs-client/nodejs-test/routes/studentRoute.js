@@ -36,7 +36,7 @@ router.delete("/student/:id", async (req, res) => {
             res.status(400).send();
         }
         else {
-            res.send(studentData)
+            res.json(studentData)
         }
     }
     catch (err) {

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FormControl, InputLabel, Input, FormHelperText, Button } from '@material-ui/core';
 import axios from 'axios';
 
-const AddForm = () => {
+const AddForm = (props) => {
 
     const [newStudent, setNewStudent] = useState({
         name: "",
@@ -59,6 +59,7 @@ const AddForm = () => {
                     onChange={(event) => setNewStudent({...newStudent, address: event.target.value})}
                     type="text" /><br />
             </FormControl><br />
+            <Button variant="contained" type="submit" onClick={props.closeAdd}>Cancle</Button>
             <Button variant="contained" type="submit">Submit</Button>
             </form>
         </div>
