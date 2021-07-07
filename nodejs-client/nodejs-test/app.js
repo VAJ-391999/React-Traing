@@ -23,7 +23,7 @@ mongoose.connect(process.env.DATABASE_ACCESS, {
  }, () => console.log("Database Connected"))
 
 //use is for middleware registration
-app.use(cookieParser());
+
 app.use(session({secret: "hsndbndhjfhfu", resave : false, saveUninitialized : true}))
 app.use('/userapi', (req,res) => {
     
@@ -41,6 +41,7 @@ app.use(function(req, res, next) {
     next();
   });
 app.use(express.json())
+app.use(cookieParser());
 app.use(cors({ credentials : true, origin: "http://localhost:3000"}))
 app.use('/app', routeUrls)
 app.use('/restfulapi', routeStudentUrls)

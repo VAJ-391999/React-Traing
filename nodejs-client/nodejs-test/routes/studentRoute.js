@@ -1,8 +1,9 @@
 const Student = require("../models/StudentsModel");
 const express = require("express");
+const { requireAuth } = require('../middleware/authMiddleware');
 const router = express.Router();
 
-router.get("/student", async (req, res) => {
+router.get("/student", requireAuth, async (req, res) => {
     try {
         const studentData = await Student.find({})
         res.json(studentData)

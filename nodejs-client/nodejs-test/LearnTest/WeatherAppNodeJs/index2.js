@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const routeUrl  = require('./routes/routes');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
 
 
@@ -16,6 +17,7 @@ const app = express();
 
 //Body parser Middleware
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: false}))
 
 //homepage

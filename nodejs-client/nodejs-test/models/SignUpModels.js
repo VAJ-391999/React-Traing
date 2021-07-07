@@ -50,10 +50,26 @@ const SignUpTemplate = new mongoose.Schema({
 
 SignUpTemplate.methods.generateAuthToken = async function() {
     try {
-        const token = jwt.sign({_id:this._id.toString()}, process.env.SECRET_KEY)
-        console.log(token)
-        this.tokens = this.tokens.concat({token:token})
+        console.log("id:",this._id)
+        const token = jwt.sign({_id:this._id, "iat": 1234567890}, process.env.SECRET_KEY)
+        console.log("Signup token genetater",token)
+        this.tokens = this.tokens.concat({token})
         await this.save();
+        return token
+    }
+    catch(err) {
+        response.json(err)
+    }
+
+    
+}
+
+SignUpTemplate.methods.generateAuthTokenLogin = async function() {
+    try {
+        const token = jwt.sign({_id:this._id}, process.env.SECRET_KEY)
+        console.log("logintoken generater",token)
+        //this.tokens = this.tokens.concat({token:token})
+        //await this.save();
         return token
     }
     catch(err) {
@@ -63,9 +79,9 @@ SignUpTemplate.methods.generateAuthToken = async function() {
 
 SignUpTemplate.pre('save', async function(next){
     if(this.isModified("password")) {
-        console.log(`current password ${this.password}`)
+        //console.log(`current password ${this.password}`)
         this.password = await bcrypt.hash(this.password, 10);
-        console.log(`current password ${this.password}`)
+        //console.log(`current password ${this.password}`)
     }
     
     next(); 

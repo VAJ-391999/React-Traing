@@ -1,8 +1,10 @@
 const requests = require('requests');
 const express = require('express')
 const router = express.Router();
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const SignUpTemplateCopy = require('../models/SignUpModels');
+
 
 router.post('/signup', async (request, response) => {
 
@@ -18,27 +20,18 @@ router.post('/signup', async (request, response) => {
         console.log("success token", token)
 
         const signup = await signUpedUser.save()
-        //response.json({ msg: "You have Sign Up Successfully", signup })
-        response.status(200)
-                   .cookie("signup", token, {
+        response.json({ msg: "You have Sign Up Successfully", signup })
+        /*response.status(200)
+                   .cookie("signup", "signupjwt", {
                         sameSite : "strict",
                         path: "/",
-                        expires : new Date( new Date().getTime() + 100 * 1000),
                         httpOnly : true 
-                   }).send({ msg: "Signup Success", signup })
+                   }).send({ msg: "Signup Success", signup })*/
 
     }
     catch (err) {
-        response.json({ msg: "Please Enter Valid Entry" })
+        response.json({ msg: err.message })
     }
-
-    /*signUpedUser.save()
-    .then(data => {
-        response.json({ msg : "You have Sign Up Successfully" ,data})
-    })
-    .catch(err => {
-        response.json({ msg : "Please Enter Valid Entry"})
-    })*/
 })
 
 router.get('/login', (request, response) => {
@@ -68,23 +61,23 @@ router.post('/login', async (request, response) => {
             password: request.body.password
         }
 
+        console.log(`before login time get cookie ${request.headers.cookie.login}`)
+
         const useremail = await SignUpTemplateCopy.findOne({ email: registeruser.email })
 
         if (useremail) {
             const isMatch = await bcrypt.compare(registeruser.password, useremail.password)
 
-            const token = await useremail.generateAuthToken();
-            console.log("success token", token)
-
             if (isMatch) {
+
+                const token = jwt.sign({_id:useremail._id, "iat": 1234567890}, process.env.SECRET_KEY)
+                console.log("login token generater",token)
+
                 response.status(200)
-                   .cookie("login", "jwt", {
-                        sameSite : "strict",
-                        path: "/",
-                        expires : new Date( new Date().getTime() + 100 * 1000),
+                   .cookie("login", token, {
                         httpOnly : true 
                    }).send({ msg: "Login Success", useremail })
-                   //response.json({ msg: "Login Success", useremail })
+
             }
             else {
                 response.json({ msg: "Please Enter Correct Password" })
@@ -97,30 +90,37 @@ router.post('/login', async (request, response) => {
     catch (err) {
         response.json({ msg: "Please Enter Valid Login Details" })
     }
-
-
-
-
 })
 
 
 router.get('/dashboard', (request, response) => {
-    console.log(request.session.user)
-    if (!request.session.user) {
-        response.status(401).send()
+    console.log(`Dashboard time get cookie ${request.headers.cookie}`)
+    let loginToken = "";
+    
+    const cookieData = request.headers.cookie.split(';');
+    cookieData.map((item,index) => {
+        const tempData = item.split("=")
+        if (tempData[0] === "login") {
+            loginToken = tempData[1]
+        }
+    })
+    console.log("login Token" , loginToken)
+    if(request.headers.cookie) {
+        response.json({msg: "dashboard"})
     }
     else {
-        response.status(200).send("Welcome to secret API")
+        response.json({msg: "cookie not set"})
     }
+    
 
 })
 
 router.post('/', (request, response) => {
+    
     console.log(request.body.cName);
     requests(`http://api.openweathermap.org/data/2.5/weather?q=${request.body.cName}&appid=5ae591762ca1938ecc9cddeafe00f8d4`)
         .on('data', function (chunk) {
             response.setHeader("Access-Control-Allow-Origin", "*")
-            //res.writeHead(200,"Access-Control-Allow-Origin", "*")
             response.write(chunk)
             response.end(`Post Mothos Success Congo... ${request.body}`)
         })

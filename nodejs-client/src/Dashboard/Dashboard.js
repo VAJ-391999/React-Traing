@@ -22,7 +22,11 @@ const Dashboard = () => {
     const getRowId = (row) => row.id;
 
     useEffect(() => {
-        axios.get("http://localhost:4000/restfulapi/student")
+
+        axios.get("http://localhost:4000/app/dashboard", {withCredentials: true})
+        .then(res => console.log(`dashboard ${res.data.msg}`))
+
+        axios.get("http://localhost:4000/restfulapi/student", {withCredentials: true})
             .then(res => {
                 setStudent(res.data)
             })
@@ -30,7 +34,7 @@ const Dashboard = () => {
     }, [])
 
     const deleteStudent = (index) => {
-        axios.delete(`http://localhost:4000/restfulapi/student/${index}`)
+        axios.delete(`http://localhost:4000/restfulapi/student/${index}`, {withCredentials: true})
             .then(res => console.log(res.data))
             .catch(err => console.log(err))
     }
