@@ -1,15 +1,21 @@
 
 import React, { useState } from 'react';
 import { useHistory , NavLink, Link} from 'react-router-dom';
-import Cookies from 'js-cookie';
 import { FormControl, InputLabel, Input, FormHelperText, Button } from '@material-ui/core';
 import './Login.css'
 import axios from 'axios';
-import SignUp from '../SignUp/SignUp';
+import { useDispatch, useSelector } from 'react-redux';
+import * as authAction from '../Redux/actions/auth';
+
 
 const Login = () => {
 
     let history = useHistory();
+    const dispatch = useDispatch();
+    const myState = useSelector(state => {
+        return state.auth
+    })
+    console.log("Login",myState.isAuthentication, myState.currentUserName)
 
     const [loginDetails, setLoginDetails] = useState({
         email: '',
@@ -17,32 +23,27 @@ const Login = () => {
     });
 
     const [loginMsg, setLoginMsg] = useState({ msg: "" })
-    const [cookieData, setCookieData] = useState({})
 
     const loginFormSubmit = (event) => {
         event.preventDefault();
-
-        /*axios.get('http://localhost:4000/app/login')
-        .then(res => {
-            const serversideData = res.data;
-            serversideData.map((user,index) => {
-                if(user.email === loginDetails.email) {
-                    if(user.password === loginDetails.password) {
-                        console.log("You have successful logged in");
-                        history.replace('/Dashboard')
-                    }
-                }
-                
-            })
-        })*/
 
         axios.post('http://localhost:4000/app/login', loginDetails, { withCredentials: true })
             .then(res => {
                 console.log("After post", res.data)
                 setLoginMsg({ ...loginMsg, msg: res.data.msg })
 
-                if (res.data.useremail) {
-                    history.replace('/dashboard')
+                if (res.data.auth) {
+                    if(res.data.useremail) {
+                        dispatch(authAction.isAuth(true))
+                        dispatch(authAction.currentUser(res.data.useremail.fullName))
+                        history.replace('/dashboard')
+                    }
+                    else{
+                        history.replace('/signup')
+                    }
+                }
+                else{
+                    history.replace('/login')
                 }
             })
     }

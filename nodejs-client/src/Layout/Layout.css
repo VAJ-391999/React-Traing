@@ -1,7 +1,18 @@
-.Layout .MuiToolbar-root {
-
+.makeStyles-root-1 .MuiToolbar-root {
+    margin-left: 0!important;
 }
 
-.MuiAppBar-colorPrimary{
+.makeStyles-root-1 header.MuiAppBar-colorPrimary{
+    background-color: black !important;
+}
+
+.MuiToolbar-root .MuiButton-contained{
     background-color: black;
+    color: whitesmoke;
+    
+}
+
+.makeStyles-appBar-3 {
+    margin-left: 0;
+    width: 100%;
 }

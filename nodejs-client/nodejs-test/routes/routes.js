@@ -3,6 +3,7 @@ const express = require('express')
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { checkUser } = require('../middleware/authMiddleware');
 const SignUpTemplateCopy = require('../models/SignUpModels');
 
 
@@ -76,24 +77,24 @@ router.post('/login', async (request, response) => {
                 response.status(200)
                    .cookie("login", token, {
                         httpOnly : true 
-                   }).send({ msg: "Login Success", useremail })
+                   }).send({ msg: "Login Success", useremail, auth: true })
 
             }
             else {
-                response.json({ msg: "Please Enter Correct Password" })
+                response.json({ msg: "Please Enter Correct Password", auth: false  })
             }
         }
         else {
-            response.json({ msg: "Please Enter Correct Email" })
+            response.json({ msg: "Please Enter Correct Email", auth: false  })
         }
     }
     catch (err) {
-        response.json({ msg: "Please Enter Valid Login Details" })
+        response.json({ msg: "Please Enter Valid Login Details" , auth: false })
     }
 })
 
 
-router.get('/dashboard', (request, response) => {
+router.get('/dashboard', checkUser, (request, response) => {
     console.log(`Dashboard time get cookie ${request.headers.cookie}`)
     let loginToken = "";
     
@@ -105,13 +106,23 @@ router.get('/dashboard', (request, response) => {
         }
     })
     console.log("login Token" , loginToken)
+    console.log("middleware", request.currentuser)
     if(request.headers.cookie) {
         response.json({msg: "dashboard"})
     }
     else {
         response.json({msg: "cookie not set"})
     }
-    
+})
+
+router.get('/logout', async (request, response) => {
+    try{
+        response.status(200)
+        .cookie("login","logut", {maxAge: 1, httpOnly : true })
+        .json({msg:"logout"})
+    }catch(err) {
+        response.status(400).json({msg:"Somthing Wrong"})
+    }
 
 })
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -9,9 +10,13 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { useSelector, useDispatch } from 'react-redux';
 import './Layout.css';
-import { MenuItem, MenuList } from '@material-ui/core';
+import { MenuItem, MenuList, Button } from '@material-ui/core';
 import { Link, NavLink } from 'react-router-dom';
+import axios from 'axios';
+import * as authAction from '../Redux/actions/auth';
+import * as actiontype from '../Redux/actions/actionType';
 
 
 const drawerWidth = 240;
@@ -50,6 +55,12 @@ const useStyles = makeStyles((theme) => ({
   nested: {
       paddingLeft: theme.spacing(4),
   },
+  logoutButton: {
+    marginLeft: theme.spacing(10)
+  },
+  title:{
+    flexGrow: 1
+  }
 }));
 
 const Layout = (props) => {
@@ -57,6 +68,27 @@ const Layout = (props) => {
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  const history = useHistory();
+
+  const dispatch = useDispatch();
+  const myState = useSelector(state => {
+    return state.auth
+  })
+
+  console.log("Layout",myState.isAuthentication, myState.currentUserName)
+
+  const logoutHandler = () => {
+    axios.get('http://localhost:4000/app/logout', { withCredentials: true })
+    .then(res => {
+      console.log(res.data.msg)
+      dispatch(authAction.isAuth(false))
+      dispatch(authAction.currentUser(""))
+      history.replace("/")
+    })
+    .catch(err => console.log(err.message))
+
+  }
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -97,9 +129,10 @@ const Layout = (props) => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
+          <Typography variant="h6" noWrap className={classes.title}>
             Weather Details
           </Typography>
+          <Button variant="contained" onClick={logoutHandler} >Logout</Button>
         </Toolbar>
       </AppBar>
       <nav className={classes.drawer} aria-label="mailbox folders">

@@ -1,9 +1,9 @@
 const Student = require("../models/StudentsModel");
 const express = require("express");
-const { requireAuth } = require('../middleware/authMiddleware');
+const { requireAuth, checkUser } = require('../middleware/authMiddleware');
 const router = express.Router();
 
-router.get("/student", requireAuth, async (req, res) => {
+router.get("/student", async (req, res) => {
     try {
         const studentData = await Student.find({})
         res.json(studentData)
@@ -28,7 +28,7 @@ router.get("/student/:id", async (req, res) => {
     }
 })
 
-router.delete("/student/:id", async (req, res) => {
+router.delete("/student/:id", requireAuth, async (req, res) => {
     try {
         const id = req.params.id
         const studentData = await Student.findByIdAndDelete(id)
@@ -45,7 +45,7 @@ router.delete("/student/:id", async (req, res) => {
     }
 })
 
-router.patch("/student/:id", async (req, res) => {
+router.patch("/student/:id", requireAuth,async (req, res) => {
     try {
         const _id = req.params.id
         const studentData = await Student.findByIdAndUpdate(_id, req.body, {new : true})
@@ -63,7 +63,7 @@ router.patch("/student/:id", async (req, res) => {
 }
 })
 
-router.post("/student", async (req, res) => {
+router.post("/student", requireAuth,async (req, res) => {
 
     try {
         const student = new Student(req.body)

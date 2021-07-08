@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { XGrid, GridColDef, GridCellParams } from '@material-ui/x-grid';
 import { DataGrid } from '@material-ui/data-grid'
 import AddForm from './AddForm';
 import EditForm from './EditForm';
-import Layout from '../Layout/Layout';
+import { useDispatch, useSelector} from 'react-redux';
 import {
     Button,
     AppBar,
@@ -13,11 +13,16 @@ import {
 } from '@material-ui/core'
 
 
-const Dashboard = () => {
+const Dashboard = (props) => {
 
     const [student, setStudent] = useState();
     const [isAdd, setIsAdd] = useState(false);
     const [isEdit, setIsEdit] = useState();
+
+    const myState = useSelector(state => {
+        return state.auth
+    })
+    console.log("Dashboard",myState.isAuthentication, myState.currentUserName)
 
     const getRowId = (row) => row.id;
 
@@ -108,7 +113,7 @@ const Dashboard = () => {
             <Button variant="outlined" onClick={() => setIsAdd(true)}>+</Button>
             {isAdd && <AddForm closeAdd={() => setIsAdd(false)} />}
             {isEdit && <EditForm index={isEdit} closeEdit={() => setIsEdit(null)} />}
-            <div style={{ height: 250, width: '100%' }}>
+            <div style={{ height: '500px', width: '100%' }}>
                 {student ? <DataGrid
                     columns={columns}
                     rows={student}
