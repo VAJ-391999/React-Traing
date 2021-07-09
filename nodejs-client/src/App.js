@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import SignUp from './SignUp/SignUp';
 import Login from './Login/Login';
 import { Switch, Route, Redirect } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import Home from './Home/Home';
 import Dashboard from './Dashboard/Dashboard';
 import Layout from './Layout/Layout';
@@ -13,6 +14,9 @@ import { useDispatch, useSelector } from 'react-redux';
 
 const App = () => {
 
+    const location = useLocation();
+    console.log(location.pathname);
+
     const dispatch = useDispatch();
     const myState = useSelector(state => {
         return state.auth
@@ -20,22 +24,22 @@ const App = () => {
     console.log("App", myState.isAuthentication, myState.currentUserName)
 
     let routes = (<div>Loading...</div>)
-    let tempRoute = (
-                <Layout>
-                    <Route path="/dashboard" component={Dashboard} exact />
-                    <Route path="/myworkspace" component={MyWorkSpace} exact />
-                    <Route path="/inbox" component={Inbox} exact />
-                    <Redirect path="/dashboard" />
-                </Layout>
-    )
+    let redirectTemp = (<div></div>)
+
     if (myState.isAuthentication) {
+        if (location.pathname === "/") {
+            redirectTemp = (
+                <Redirect to="/dashboard" />
+            )
+        }
+        
         routes = (
             <Switch>
                 <Layout>
                     <Route path="/dashboard" component={Dashboard} exact />
                     <Route path="/myworkspace" component={MyWorkSpace} exact />
                     <Route path="/inbox" component={Inbox} exact />
-                    <Redirect to="/" />
+                    {redirectTemp}
                 </Layout>
             </Switch>
 

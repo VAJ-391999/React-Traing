@@ -12,11 +12,21 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { useSelector, useDispatch } from 'react-redux';
 import './Layout.css';
-import { MenuItem, MenuList, Button } from '@material-ui/core';
 import { Link, NavLink } from 'react-router-dom';
 import axios from 'axios';
 import * as authAction from '../Redux/actions/auth';
 import * as actiontype from '../Redux/actions/actionType';
+import { accordionData } from './AccordionData/AccordionData';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Logo from '../Layout/Logo/Logo';
+import {
+  MenuItem,
+  MenuList,
+  Button,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails
+} from '@material-ui/core';
 
 
 const drawerWidth = 240;
@@ -32,10 +42,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   appBar: {
-    [theme.breakpoints.up('sm')]: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth,
-    },
+    zIndex: theme.zIndex.drawer + 1
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -53,13 +60,23 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
   nested: {
-      paddingLeft: theme.spacing(4),
+    paddingLeft: theme.spacing(4),
   },
   logoutButton: {
     marginLeft: theme.spacing(10)
   },
-  title:{
-    flexGrow: 1
+  title: {
+    flexGrow: 1,
+    color: '#f0c420',
+    fontSize: '40px'
+  },
+  currentuser: {
+    textAlign: 'left'
+  },
+  heading: {
+    fontSize: theme.typography.pxToRem(15),
+
+    flexShrink: 0
   }
 }));
 
@@ -76,17 +93,17 @@ const Layout = (props) => {
     return state.auth
   })
 
-  console.log("Layout",myState.isAuthentication, myState.currentUserName)
+  console.log("Layout", myState.isAuthentication, myState.currentUserName)
 
   const logoutHandler = () => {
     axios.get('http://localhost:4000/app/logout', { withCredentials: true })
-    .then(res => {
-      console.log(res.data.msg)
-      dispatch(authAction.isAuth(false))
-      dispatch(authAction.currentUser(""))
-      history.replace("/")
-    })
-    .catch(err => console.log(err.message))
+      .then(res => {
+        console.log(res.data.msg)
+        dispatch(authAction.isAuth(false))
+        dispatch(authAction.currentUser(""))
+        history.replace("/")
+      })
+      .catch(err => console.log(err.message))
 
   }
 
@@ -97,19 +114,30 @@ const Layout = (props) => {
   const drawer = (
     <div>
       <div className={classes.toolbar} />
-        <MenuList>
-            <MenuItem component={Link} to="/dashboard">
-                Dashboard
-            </MenuItem>
-            <MenuItem component={Link} to="/myworkspace">
-                My Workspace
-            </MenuItem>
-            <MenuList className={classes.nested}>
-            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => {
-                return <MenuItem key={index} component={NavLink} to={`/${text.toLowerCase()}`}>{text}</MenuItem>
-            } )}
-            </MenuList>
-        </MenuList>
+      <div className="accordion">
+        {accordionData.map((item, index) => {
+          return <Accordion key={index}>
+            <AccordionSummary
+              expandIcon={item.itemList.length !== 0 && <ExpandMoreIcon style={{ color: 'whitesmoke' }} />}
+              aria-controls="panel1bh-content"
+              id="panel1bh-header"
+            >
+              <Typography className={classes.heading}>
+                {item.itemList.length === 0 ? <NavLink to={`/${item.heading}`}>{item.heading}</NavLink> : item.heading}
+              </Typography>
+            </AccordionSummary>
+            {item.itemList.length !== 0 ? <AccordionDetails>
+              {item.itemList.map((subitem, i) => {
+                return <Typography key={i}>
+                  <NavLink to={`/${subitem}`}>{subitem}</NavLink>
+                </Typography>
+              })}
+
+            </AccordionDetails> : null}
+
+          </Accordion>
+        })}
+      </div>
     </div>
   );
 
@@ -129,8 +157,12 @@ const Layout = (props) => {
           >
             <MenuIcon />
           </IconButton>
+          <Logo />
           <Typography variant="h6" noWrap className={classes.title}>
             Weather Details
+          </Typography>
+          <Typography variant="h6" noWrap className={classes.currentuser}>
+            {myState.currentUserName}
           </Typography>
           <Button variant="contained" onClick={logoutHandler} >Logout</Button>
         </Toolbar>

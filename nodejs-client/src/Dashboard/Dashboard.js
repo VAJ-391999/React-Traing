@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { XGrid, GridColDef, GridCellParams } from '@material-ui/x-grid';
-import { DataGrid } from '@material-ui/data-grid'
+import { DataGrid } from '@material-ui/data-grid';
 import AddForm from './AddForm';
 import EditForm from './EditForm';
 import { useDispatch, useSelector} from 'react-redux';
@@ -9,7 +9,8 @@ import {
     Button,
     AppBar,
     Toolbar,
-    Typography 
+    Typography ,
+    CircularProgress
 } from '@material-ui/core'
 
 
@@ -117,7 +118,7 @@ const Dashboard = (props) => {
                 {student ? <DataGrid
                     columns={columns}
                     rows={student}
-                /> : null}
+                /> : <CircularProgress />}
             </div>
 
         </div>

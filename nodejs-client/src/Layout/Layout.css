@@ -2,7 +2,7 @@
     margin-left: 0!important;
 }
 
-.makeStyles-root-1 header.MuiAppBar-colorPrimary{
+.makeStyles-root-1 .MuiAppBar-colorPrimary{
     background-color: black !important;
 }
 
@@ -16,3 +16,46 @@
     margin-left: 0;
     width: 100%;
 }
+.MuiCircularProgress-root{
+    align-items: center;
+}
+
+.MuiCircularProgress-colorPrimary {
+    color: black !important;
+}
+
+.MuiAccordionDetails-root{
+    flex-direction: column;
+}
+
+.MuiAccordionDetails-root a{
+    margin-left: 20px;
+    color:whitesmoke;
+    text-decoration: none;
+}
+
+.accordion .MuiAccordionSummary-content a{
+    color:whitesmoke;
+    text-decoration: none;
+}
+
+.accordion a.active{
+    color: #f0c420;
+    text-decoration: none;
+    font-weight: 400;
+}
+
+.accordion .MuiAccordion-root {
+    background-color: black;
+    color: whitesmoke;
+}
+
+.MuiDrawer-root .MuiDrawer-paper {
+    background-color: black;
+}
+
+.accordion .MuiAccordion-root.Mui-expanded {
+    margin: 0 0 !important;
+}
+
+
