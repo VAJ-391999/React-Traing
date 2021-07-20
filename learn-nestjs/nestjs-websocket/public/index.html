@@ -5,49 +5,120 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <link href="https://unpkg.com/vue-simple-notify/dist/vue-simple-notify.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/vue-simple-notify/dist/vue-simple-notify.min.js"></script>
     <title>Document</title>
 </head>
 <body>
     <div id="v-app">
-        <h1>{{ title }}</h1>
+        <h1>WebSocket Testing</h1>
+        <section class="chat">
+            <div>
+                <form>
+                    <input placeholder="Enter Value" v-model="text" type="text" />
+                    <button type="submit" @click.prevent="sendChatMessage()">Send</button>
+                </form>
+                <div class="tab-row">
+                    <button class="tab-btn" :class="{ active: activeRoom === 'general'}" @click="activeRoom = 'general'">General</button>
+                    <button class="tab-btn" :class="{ active: activeRoom === 'typescript'}" @click="activeRoom = 'typescript'">Typescript</button>
+                    <button class="tab-btn" :class="{ active: activeRoom === 'nestjs'}" @click="activeRoom = 'nestjs'">Nestjs</button>
+                </div>
+                <div class="tab-row">
+                    Status : {{ isMemberOfActiveRoom ? 'Joined' : 'Not Joined'}}<button @click="toggleRoomMembership()">{{ isMemberOfActiveRoom ? 'Leave' : 'Join' }}</button>
+                </div>
+                <ul>
+                    <li v-for="msg of messages[activeRoom]">
+                        <strong>{{ msg.sender }}: </strong>    {{ msg.message }}
+                    </li>
+                </ul>
+            </div>
+        </section>
+        <section class="alerts">
+            <alerts-component :items="alerts"></alerts-component>
+        </section>
 
-        <div>
-            <form>
-                <input placeholder="Enter Value" v-model="text" type="text" />
-                <button type="submit" @click.prevent="sendMessage()">Send</button>
-            </form>
-            <ul>
-                <li v-for="msg of messages">{{ msg }}</li>
-            </ul>
-        </div>
+       
     </div>
     <script>
+        Vue.component('alerts-component', VueSimpleNotify.VueSimpleNotify)
         var app = new Vue({
             el: "#v-app",
             data: {
-                title: "Websocket Tester",
+                username: '',
                 text: "",
-                messages: ['m1', 'm2'],
-                socket: null
+                messages: {
+                    general: [],
+                    typescript: [],
+                    nestjs: []
+                },
+                rooms: {
+                    general: false,
+                    typescript: false,
+                    nestjs: false
+                },
+                socket: { chat: null, alters: null},
+                alerts: [],
+                activeRoom: 'general',
+                
             },
             methods: {
-                sendMessage() {
+                sendChatMessage() {
                     console.log(`send: ${this.text}`);
-                    this.messages.push(this.text);
-                    this.text = ""
+                    if(this.isMemberOfActiveRoom) {
+                        this.socket.chat.emit('chatToServer',{sender: this.username, message: this.text, room: this.activeRoom})
+                        this.text = ""
+                    }else {
+                        alert('You must be the member of room to send the message!!!')
+                    }
                 },
-                receiveMessage() {
+                receiveChatMessage(msg) {
                     console.log(`recv: ${msg}`);
-                    this.messages.push(msg);
+                    this.messages[msg.room].push(msg);
+                },
+                receiveAlertMessage(msg) {
+                    this.alerts.push(msg);
+                },
+                toggleRoomMembership() {
+                    if(this.isMemberOfActiveRoom) {
+                        this.socket.chat.emit('leaveRoom', this.activeRoom)
+                    }else {
+                        this.socket.chat.emit('joinRoom', this.activeRoom)
+                    }
+                }
+            },
+            computed: {
+                isMemberOfActiveRoom() {
+                    return this.rooms[this.activeRoom]
                 }
             },
             created() {
-                this.socket = io('https://localhost/3000');
-                this.socket.on('msgToClient', (msg) => {
-                    this.receiveMessage(msg);
+                this.username = prompt('Enter Your Username:')
+
+                this.socket.chat = io('http://localhost:3000/chat');
+                this.socket.chat.on('chatToClient', (msg) => {
+                    this.receiveChatMessage(msg);
                 });
+
+                this.socket.chat.on('connect', () => {
+                    this.toggleRoomMembership()
+                });
+
+                this.socket.chat.on('joinedRoom', (room) => {
+                    this.rooms[room] = true;
+                });
+
+                this.socket.chat.on('leftRoom', (room) => {
+                    this.rooms[room] = false;
+                })
+
+                this.socket.alerts = io('http://localhost:3000/alert')
+                this.socket.alerts.on('alerttoClient', (msg) => {
+                    this.receiveAlertMessage(msg)
+                })
             }
         })
     </script>
 </body>
 </html>
+

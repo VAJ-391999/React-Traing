@@ -8,7 +8,8 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
 
   private logger: Logger = new Logger("AppGetway");
 
-  @WebSocketServer() wss: Server
+  @WebSocketServer()
+  wss: Server
 
   afterInit(server: Server){
     this.logger.log("Initialized");
@@ -23,8 +24,8 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
   }
 
   @SubscribeMessage('msgToServer')
-  handleMessage(client: Socket, text: string): WsResponse<string> {
-    //return this.wss.emit('msgToClient', text)
-    return { event: 'msgToClient', data: text};
+  handleMessage(client: Socket, text: string): void {
+     this.wss.emit('msgToClient', text)
+    //return { event: 'msgToClient', data: text};
   }
 }
