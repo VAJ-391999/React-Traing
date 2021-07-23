@@ -1,35 +1,72 @@
 //localhost:3000/
-
 import MeetupList from "../components/meetups/MeetupList";
-import Jummu from '../public/jummu_kashmir.jpg';
+import { MongoClient } from 'mongodb';
+import { Fragment } from "react";
+import Head from 'next/head';
+import { promises as fs } from 'fs'
+import path from 'path'
 
-const DUMMY_MEETUPS =[
-    {
-        id: 'm1',
-        title: 'First meet',
-        image: 'https://en.wikipedia.org/wiki/Jammu_and_Kashmir_(union_territory)#/media/File:Akhnoor_Fort_-_Jammu_-_Jammu_and_Kashmir_-_DSC_0001.jpg',
-        description: 'Nice place',
-        address: 'Jummu kasmir first meet'
-    },
-    {
-        id: 'm2',
-        title: 'Second meet',
-        image: 'https://en.wikipedia.org/wiki/Jammu_and_Kashmir_(union_territory)#/media/File:Akhnoor_Fort_-_Jammu_-_Jammu_and_Kashmir_-_DSC_0001.jpg',
-        description: 'Nice place',
-        address: 'Jummu kasmir second meet'
-    },
-    {
-        id: 'm2',
-        title: 'Third meet',
-        image: '/public/static/jummu_kashmir.jpg',
-        description: 'Nice place',
-        address: 'Jummu kasmir third meet'
-    },
-]
-
-function HomePage() {
-    return (
-        <MeetupList meetups={DUMMY_MEETUPS} />
-    )
+function HomePage(props: any) {
+ 
+  return (
+      <Fragment>
+          <Head>
+              <title>React Meetups</title>
+              <meta
+                name="nice"
+                content="add a new network" />
+          </Head>
+          <MeetupList meetups={props.meetups} />
+      </Fragment>
+    
+    );
 }
-export default HomePage;
+
+/*export async function getServerSideProps(context: any) {
+
+    const req = context.req;
+    const res = context.res;
+
+    return {
+        props: {
+            meetups: DUMMY_MEETUPS
+        }
+    };
+}*/
+
+export async function getStaticProps() {
+    // get data or fatch data from API 
+    const client = await MongoClient.connect('mongodb+srv://Payal:Payal@cluster0.9orwd.mongodb.net/meetups?retryWrites=true&w=majority')
+    const db = client.db();
+
+    const meetupsCollection = db.collection('meetups');
+
+    const meetups = await meetupsCollection.find().toArray();
+
+    client.close();
+
+   /* const postsDirectory = path.join(process.cwd(), 'posts')
+    const filenames = await fs.readdir(postsDirectory)
+  
+    const posts = filenames.map(async (filename) => {
+      const filePath = path.join(postsDirectory, filename)
+      const fileContents = await fs.readFile(filePath, 'utf8')
+      return {
+        filename,
+        content: fileContents,
+      }
+    })*/
+
+    return {
+        props: {
+            meetups: meetups.map((meetup: any) => ({
+                title: meetup.title,
+                image: meetup.image,
+                address: meetup.address,
+                id: meetup._id.toString()
+            }))
+        },
+        revalidate: 10
+    };
+}
+export default HomePage

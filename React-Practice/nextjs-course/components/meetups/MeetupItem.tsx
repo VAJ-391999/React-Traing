@@ -1,9 +1,17 @@
 import Card from "../ui/Card";
 import Image from 'next/image'
-import myImage from "../../public/jummu_kashmir.svg";
+import myImage from "../../public/jummu_kashmir.jpg";
 import classes from "./MeetupItem.module.css";
+import { useRouter } from "next/router";
 
 function MeetupItem(props: any) {
+
+  const router = useRouter();
+
+  function showDetailsMeetup() {
+    router.push('/' + props.id)
+  }
+
   return (
     <li className={classes.item}>
       <Card>
@@ -15,7 +23,7 @@ function MeetupItem(props: any) {
           <address>{props.address}</address>
         </div>
         <div className={classes.actions}>
-          <button>Show Details</button>
+          <button onClick={showDetailsMeetup}>Show Details</button>
         </div>
       </Card>
     </li>

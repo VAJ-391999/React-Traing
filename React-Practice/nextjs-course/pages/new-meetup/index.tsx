@@ -1,9 +1,37 @@
-function NewMeetUp() {
-    return (
-        <div>
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { Fragment } from "react";
+import NewMeetupForm from "../../components/meetups/NewMeetupForm";
 
-        </div>
-    )
+function NewMeetupPage() {
+
+  const router = useRouter();
+
+  async function addMeetupHandler(enteredMeetupData: any) {
+    console.log(enteredMeetupData);
+    const response = await fetch("/api/new-meetup", {
+      method: "POST",
+      body: JSON.stringify(enteredMeetupData),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = response.json();
+    console.log(data);
+
+    router.push('/');
+  }
+
+  return (<Fragment>
+    <Head>
+    <title>A New Meetup</title>
+      <meta
+        name="nice"
+        content="add a new network" />
+    </Head>
+    <NewMeetupForm onAddMeetup={addMeetupHandler} />
+  </Fragment>)
 }
 
-export default NewMeetUp;
+export default NewMeetupPage;

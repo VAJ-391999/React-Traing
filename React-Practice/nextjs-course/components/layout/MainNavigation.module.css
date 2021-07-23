@@ -31,9 +31,14 @@
     font-size: 1.5rem;
     color: #fcb8d2;
   }
+
+  .MainNavigation_header__t8YPG nav a:hover {
+    color: aqua;
+  }
   
   .header a:hover,
   .header a:active,
   .header a.active {
     color: white;
+    cursor: pointer !important;
   }
