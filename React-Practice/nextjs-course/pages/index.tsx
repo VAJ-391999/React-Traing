@@ -3,19 +3,25 @@ import MeetupList from "../components/meetups/MeetupList";
 import { MongoClient } from 'mongodb';
 import { Fragment } from "react";
 import Head from 'next/head';
+import * as actiontypes from '../redux/action/actionstypes';
 import { promises as fs } from 'fs'
 import path from 'path'
+import { useSelector } from "react-redux";
 
 function HomePage(props: any) {
+
+    const myValue = useSelector((state: any) => state.counter)
+    console.log(myValue.value)
  
   return (
       <Fragment>
           <Head>
-              <title>React Meetups</title>
+              <title>{process.env.title}</title>
               <meta
                 name="nice"
                 content="add a new network" />
           </Head>
+         
           <MeetupList meetups={props.meetups} />
       </Fragment>
     
@@ -35,8 +41,9 @@ function HomePage(props: any) {
 }*/
 
 export async function getStaticProps() {
+   
     // get data or fatch data from API 
-    const client = await MongoClient.connect('mongodb+srv://Payal:Payal@cluster0.9orwd.mongodb.net/meetups?retryWrites=true&w=majority')
+    const client = await MongoClient.connect(`${process.env.DATABASE_ACCESS}`)
     const db = client.db();
 
     const meetupsCollection = db.collection('meetups');
