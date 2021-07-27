@@ -1,0 +1,8 @@
+<p>employee-detail works!</p>
+<ul *ngFor="let emp of employee">
+    <li>{{ emp.id }} {{ emp.name }} | {{ emp.age }} </li>
+</ul>
+<p>{{ empId }}</p>
+<a (click)="goPrevious()">Previous</a>
+<a (click)="goNext()">Next</a>
+<p>{{errorMsg}}</p>

@@ -1,0 +1,46 @@
+<p>test works!</p>
+<div>
+  <h1>Hii {{ name }}</h1>
+  <input type="text" value="Coder" [id]="myId" #username [(ngModel)]="user" />
+  <button (click)="setUsername(username.value)">Login</button>{{ user }}
+  <h2 [class]="successClass">{{ name }}</h2>
+  <h2 [ngClass]="messageClasses">{{ name }}</h2>
+  <h2 [style.color]="'orange'">{{ name }}</h2>
+  <h2 [style.color]="hasError ? 'red' : 'green'">Style Binding : {{ name }}</h2>
+  <button (click)="onClick($event)">Show Text</button>
+  <h2 *ngIf="displayName; else elseBlock">Coder</h2>
+  <button (click)="setDisplayName($event)">Display name</button>
+  <ng-template #elseBlock>
+    <h2>Name is hidden</h2>
+  </ng-template>
+
+  <input type="text" placeholder="Enter color name" #selectColor />
+  <button (click)="changeColor(selectColor.value)">Submit color</button>
+
+  <div [ngSwitch]="color">
+    <div *ngSwitchCase="'red'">You picked red color</div>
+    <div *ngSwitchCase="'yellow'">You picked yellow color</div>
+    <div *ngSwitchCase="'black'">You picked black color</div>
+    <div *ngSwitchDefault>Pick Again</div>
+  </div>
+
+  <div *ngFor="let clr of colors; index as i">
+    <h5>{{ i }} {{ clr }}</h5>
+  </div>
+
+  <h1>ParentData : {{ parentData }}</h1>
+
+  <button (click)="fireEvent()">Fire Event</button>
+
+  <h2>{{name | uppercase}}</h2>
+  <h2>{{ 5.789 | number:'2.2-3' }}</h2>
+  <h2>{{ 0.20 | percent}}</h2>
+  <h2>{{ 0.20 | currency }}</h2>
+  <h2>{{ 0.20 | currency: 'GBP' }}</h2>
+
+  <h2>{{ date | date }} </h2>
+  <h2>{{ date | date: 'short' }} </h2>
+  <h2>{{ date | date: 'shortDate' }} </h2>
+  <h2>{{ date | date: 'shortTime' }} </h2>
+
+</div>

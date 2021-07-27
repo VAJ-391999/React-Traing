@@ -1,0 +1,13 @@
+<div>
+  <h1>Navigation & Routing</h1>
+  <!--<h1>{{ title }} {{ message }}</h1>-->
+  <!--<app-test (childEvent)="message=$event" [parentData]="name"></app-test>-->
+  <!--<app-employee-list></app-employee-list>
+  <app-employee-detail></app-employee-detail>-->
+  <nav>
+    <a routerLink="/employeelist" routerLinkActive="active">Employee List</a><br />
+    <a routerLink="/employeedetails" routerLinkActive="active">Employee Details</a>
+  </nav>
+</div>
+
+<router-outlet></router-outlet>

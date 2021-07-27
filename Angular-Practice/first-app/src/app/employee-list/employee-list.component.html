@@ -1,0 +1,5 @@
+<p>employee-list works!</p>
+<ul *ngFor="let emp of employee">
+    <li (click)="onSelect(emp)">{{ emp.name }}</li>
+</ul>
+<p>{{errorMsg}}</p>
